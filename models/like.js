@@ -14,8 +14,8 @@ class Like extends Sequelize.Model {
           type: Sequelize.BIGINT,
           allowNull: false,
         },
-        user_id: { 
-          type: Sequelize.BIGINT,
+        sign_id: { 
+          type: Sequelize.STRING(255),
           allowNull: false,
         },
       },

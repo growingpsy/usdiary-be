@@ -1294,31 +1294,69 @@
         }
       }
     },
-    "/diaries/{diay_id}/likes": {
-      "post": {
-        "summary": "좋아요 생성",
-        "description": "일기에 좋아요를 누릅니다.",
+    "/diaries/{diary_id}/likes": {
+      "get": {
+        "summary": "좋아요 조회",
+        "description": "특정 일기의 좋아요 목록 조회",
         "tags": ["Likes"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "diary_id": {
-                    "type": "integer",
-                    "description": "좋아요를 누를 일기의 ID",
-                    "example": 123
-                  }
-                },
-                "required": ["diary_id"]
-              }
+        "parameters": [
+          {
+            "name": "diary_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "좋아요 목록 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sign_id": {
+                        "type": "string",
+                        "description": "좋아요를 누른 사용자의 sign_id"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "일기 ID를 찾을 수 없음"
+          }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+    
+      "post": {
+        "summary": "좋아요 생성",
+        "description": "일기에 좋아요를 생성합니다.",
+        "tags": ["Likes"],
+        "parameters": [
+          {
+            "name": "diary_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "201": {
-            "description": "성공적으로 좋아요가 생성되었습니다.",
+            "description": "좋아요 생성 성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -1331,13 +1369,13 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "user_id": {
-                          "type": "integer",
-                          "description": "유저 ID"
+                        "sign_id": {
+                          "type": "string",
+                          "description": "좋아요를 누른 사용자 sign_id"
                         },
                         "diary_id": {
                           "type": "integer",
-                          "description": "일기 ID"
+                          "description": "좋아요가 연결된 일기 ID"
                         }
                       }
                     }
@@ -1351,29 +1389,29 @@
           }
         },
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ]
-      }
-    },
-    "/diaries/{diay_id}/likes/{like_id}": {
+      },
+    
       "delete": {
         "summary": "좋아요 삭제",
         "description": "좋아요를 삭제합니다.",
         "tags": ["Likes"],
         "parameters": [
           {
-            "name": "like_id",
+            "name": "diary_id",
             "in": "path",
-            "description": "삭제할 좋아요의 ID",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "성공적으로 좋아요가 삭제되었습니다.",
+            "description": "좋아요 삭제 성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -1389,17 +1427,16 @@
             }
           },
           "404": {
-            "description": "좋아요를 찾을 수 없습니다."
-          },
-          "500": {
-            "description": "서버 오류"
+            "description": "좋아요를 찾을 수 없음"
           }
         },
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ]
       }
-    },
+    },    
     "/diaries/{diary_id}/comments": {
     "post": {
       "summary": "댓글 생성",

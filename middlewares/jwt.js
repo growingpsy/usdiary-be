@@ -13,6 +13,14 @@ exports.verifyToken = (req, res, next) => {
         }
 
         const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET); // 'Bearer ' 부분 제거하고 검증
+        
+        // req.locals가 없으면 초기화
+        if (!req.locals) {
+            req.locals = {};
+        }
+        req.locals.decoded = decoded; // decoded를 저장
+
+
         console.log('Decoded JWT:', decoded); // JWT 디코딩 확인
 
         res.locals.decoded = decoded;
