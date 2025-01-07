@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {searchUserByNickname,getFriendDiaries,getFollowers,deleteFollowers, sendFollowRequest, handleFollowRequest, getFollowing, deleteFollowing, searchFriend, getFriends} = require('../controllers/friendlist');  // Controller 파일 가져오기
+const {searchUserByNickname,getFriendDiaries,getFollowers,deleteFollowers, sendFollowRequest, handleFollowRequest, getFollowRequests, getFollowing, deleteFollowing, searchFriend, getFriends} = require('../controllers/friendlist');  // Controller 파일 가져오기
 const { verifyToken } = require('../middlewares/jwt');
 
 // 팔로워 목록 조회
@@ -14,8 +14,8 @@ router.get('/:sign_id/followings', verifyToken, getFollowing);
 router.delete('/:sign_id/:following_id', verifyToken, deleteFollowing);
 // 팔로우 요청
 router.post('/follow-request', verifyToken, sendFollowRequest);
-// 팔로우 요청 조회 (수락 또는 거절)
-router.get('/follow-request/handle', verifyToken, handleFollowRequest);
+// 팔로우 요청 조회 
+router.get('/follow-request/handle', verifyToken, getFollowRequests);
 // 팔로우 요청 처리 (수락 또는 거절)
 router.post('/follow-request/handle', verifyToken, handleFollowRequest);
 // 친구 검색

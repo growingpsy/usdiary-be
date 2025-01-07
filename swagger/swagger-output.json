@@ -2869,6 +2869,11 @@
       "summary": "팔로우 요청",
       "tags": ["Mooner"],
       "description": "다른 사용자에게 팔로우 요청을 보냅니다.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
       "requestBody": {
         "content": {
           "application/json": {
@@ -2926,6 +2931,11 @@
       "summary": "팔로우 요청 처리",
       "tags": ["Mooner"],
       "description": "들어온 팔로우 요청을 수락하거나 거절합니다.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
       "requestBody": {
         "content": {
           "application/json": {
@@ -2984,6 +2994,85 @@
         },
         "500": {
           "description": "팔로우 요청 처리 중 오류 발생"
+        }
+      }
+    },
+    "get": {
+      "summary": "팔로우 요청 조회",
+      "tags": ["Mooner"],
+      "description": "로그인된 사용자가 받은 팔로우 요청 목록을 조회합니다.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "description": "필터링할 요청 상태 ('pending', 'accepted', 'rejected')",
+          "schema": {
+            "type": "string",
+            "enum": ["pending", "accepted", "rejected"]
+          },
+          "example": "pending"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "성공적으로 요청 목록을 조회했습니다.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "팔로우 요청 목록을 성공적으로 조회했습니다."
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "follower_sign_id": { "type": "string", "example": "user123" },
+                        "follower_user_nick": { "type": "string", "example": "닉네임" },
+                        "follower_profile_img": { "type": "string", "example": "http://example.com/profile.jpg" },
+                        "status": { "type": "string", "example": "pending" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "잘못된 요청입니다.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "잘못된 요청입니다." }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "요청 조회 중 오류 발생",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "요청 조회 중 오류가 발생했습니다." }
+                }
+              }
+            }
+          }
         }
       }
     }

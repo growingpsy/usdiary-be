@@ -221,7 +221,7 @@ exports.sendFollowRequest = async (req, res) => {
         });
     } catch (error) {
         console.error('Error sending follow request:', error);
-        return res.status(500).json({ error: '팔로우 요청 중 오류가 발생했습니다.' });
+        return res.status(500).json({ error: error.message });
     }
 };
 // 6. 팔로우 요청 처리 (수락 또는 거절)
@@ -307,7 +307,7 @@ exports.handleFollowRequest = async (req, res) => {
         }
     } catch (error) {
         console.error('Error handling follow request:', error);
-        return res.status(500).json({ error: '팔로우 요청 처리 중 오류가 발생했습니다.' });
+        return res.status(500).json({ error: error.message });
     }
 };
 // 7. 친구 목록에서 특정 친구 sign_id 검색
@@ -460,3 +460,49 @@ exports.searchUserByNickname = async (req, res) => {
         return res.status(500).json({ error: '닉네임으로 사용자와 최근 게시물을 검색하는 중 오류가 발생했습니다.' });
     }
 };
+// 팔로우 요청 조회
+  exports.getFollowRequests = async (req, res) => {
+    try {
+      const signId = res.locals.decoded.sign_id;
+      const { status } = req.query;
+  
+      const whereClause = { following_id: signId };
+      if (status) {
+        whereClause.status = status;
+      }
+  
+      const followRequests = await Friend.findAll({
+        where: whereClause,
+        attributes: ['follower_id', 'status'],
+        include: [
+          {
+            model: User,
+            as: 'Follower',
+            attributes: ['sign_id', 'user_nick'],
+            include: [
+              {
+                model: Profile,
+                attributes: ['profile_img'],
+              },
+            ],
+          },
+        ],
+      });
+  
+      const result = followRequests.map(request => ({
+        follower_sign_id: request.Follower?.sign_id || '데이터 없음',
+        follower_user_nick: request.Follower?.user_nick || '데이터 없음',
+        follower_profile_img: request.Follower?.Profile?.profile_img || null,
+        status: request.status,
+      }));
+  
+      return res.status(200).json({
+        message: '팔로우 요청 목록을 성공적으로 조회했습니다.',
+        data: result,
+      });
+    } catch (error) {
+      console.error('Error fetching follow requests:', error);
+      return res.status(500).json({ error: error.message });
+    }
+  };
+  

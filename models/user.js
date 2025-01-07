@@ -103,9 +103,9 @@ class User extends Sequelize.Model {
 
       db.User.hasOne(db.Profile, {foreignKey: 'user_id',sourceKey: 'user_id', onDelete: 'CASCADE',});
       // 이 유저가 팔로우하는 다른 유저들 (팔로잉 관계)
-      db.User.belongsToMany(db.Friend, {through: db.Friend, foreignKey: 'follower_id', as: 'Followings',otherKey: 'following_id'});
+      db.User.belongsToMany(db.Friend, {through: db.Friend, foreignKey: 'follower_id', as: 'Following',otherKey: 'following_id'});
       // 이 유저를 팔로우하는 유저들 (팔로워 관계)
-      db.User.belongsToMany(db.Friend, { through: db.Friend, foreignKey: 'following_id',as: 'Followers',otherKey: 'follower_id', });
+      db.User.belongsToMany(db.Friend, { through: db.Friend, foreignKey: 'following_id',as: 'Follower',otherKey: 'follower_id', });
       db.User.belongsTo(db.Tier, { foreignKey: 'tier_id', targetKey: 'tier_id' });
        // User는 여러 UserCondition을 가질 수 있음
       db.User.hasMany(db.UserCondition, { foreignKey: "user_id", sourceKey: "user_id" });
